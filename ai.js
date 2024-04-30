@@ -18,17 +18,16 @@ module.exports = {
       googleAuthOptions: authOptions,
     });
 
-    let { previousChapters, previousOption } = req.body;
+    let { previousChapters, previousOption, language } = req.body;
 
-    let totalPreviousChapters = previousChapters?.length || 0;
-    let thisChapterNumber = totalPreviousChapters + 1;
-    let thisChapter = totalPreviousChapters > 0 ? `Chapter ${thisChapterNumber}` : "Chapter 1";
+    const thisChapterNumber = (previousChapters?.length || 0) + 1;
+    const thisChapter = `Chapter ${thisChapterNumber}`;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       console.log("Attempt: " + attempt);
 
       try {
-        let prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption);
+        let prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption, language || "English");
 
         let request = {
           contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -41,7 +40,7 @@ module.exports = {
         let parsedPart = Helpers.safeParseJSON(part);
 
         if (parsedPart && parsedPart.content && (thisChapterNumber === 1 ? parsedPart.image : true)) {
-          return handleSuccess(parsedPart, thisChapterNumber, res);
+          return handleSuccess(parsedPart, thisChapterNumber, res, language || "English");
         }
       } catch (err) {
         console.error(`Attempt ${attempt} failed: ${err.message}`);
@@ -53,7 +52,7 @@ module.exports = {
   },
 };
 
-async function handleSuccess(parsedPart, chapterNumber, res) {
+async function handleSuccess(parsedPart, chapterNumber, res, language) {
   console.log("Generating audio...");
 
   const openai = new OpenAI({
@@ -63,9 +62,11 @@ async function handleSuccess(parsedPart, chapterNumber, res) {
   let mp3 = await openai.audio.speech.create({
     model: "tts-1",
     voice: "onyx",
-    input: `${chapterNumber === 1 ? parsedPart.title : ""}. Chapter ${chapterNumber}. ${
+    input: `${chapterNumber === 1 ? parsedPart.title : ""}. ${Helpers.l18n("chapter", language)} ${chapterNumber}. ${
       parsedPart.content
-    }. Will you choose option A: ${parsedPart.optionA}, or option B: ${parsedPart.optionB}?`,
+    }. ${Helpers.l18n("optionA", language)}: ${parsedPart.optionA}. ${Helpers.l18n("optionB", language)}: ${
+      parsedPart.optionB
+    }.`,
   });
 
   parsedPart.audio = Buffer.from(await mp3.arrayBuffer());

@@ -1,7 +1,7 @@
 const duration = 20;
 
 class Helpers {
-  static createPrompt(chapterTitle, previousChapters, previousOption) {
+  static createPrompt(chapterTitle, previousChapters, previousOption, language) {
     return `
        Let's create a "Choose Your Destiny" type story (it needs to be appropriate for all ages). You are to generate ${chapterTitle} of the story only.
     
@@ -22,7 +22,6 @@ class Helpers {
             "optionB": "string",
             "image": "string",
             "title": "string",
-            "genre": "string"
         }
 
         Rules:
@@ -31,6 +30,7 @@ class Helpers {
          - Each chapter should take no more than ${duration} seconds to read
          - Your response must be a valid structured json object only
          - JSON.parse() will be used on your response, so format it accordingly, do not include any special characters which will break the parsing
+         - The language of your response must be: ${language}
       `;
   }
   static safeParseJSON(str) {
@@ -60,6 +60,48 @@ class Helpers {
         return { error: "Failed to parse JSON", details: finalError.message, cleanedString };
       }
     }
+  }
+  static l18n(key, language) {
+    const strings = {
+      chapter: {
+        English: "Chapter",
+        "Mandarin Chinese (Simplified)": "章",
+        Hindi: "अध्याय",
+        Spanish: "Capítulo",
+        French: "Chapitre",
+        Arabic: "الفصل",
+        Bengali: "অধ্যায়",
+        Russian: "Глава",
+        Portuguese: "Capítulo",
+        Indonesian: "Bab",
+      },
+      optionA: {
+        English: "Will you choose option A?",
+        "Mandarin Chinese (Simplified)": "你会选择选项A吗？",
+        Hindi: "क्या आप विकल्प ए चुनेंगे?",
+        Spanish: "¿Elegirás la opción A?",
+        French: "Choisirez-vous l'option A?",
+        Arabic: "هل ستختار الخيار أ؟",
+        Bengali: "আপনি কি বিকল্প এ চয়ন করবেন?",
+        Russian: "Вы выберете вариант А?",
+        Portuguese: "Você escolherá a opção A?",
+        Indonesian: "Apakah Anda akan memilih opsi A?",
+      },
+      optionB: {
+        English: "or option B?",
+        "Mandarin Chinese (Simplified)": "还是选项B？",
+        Hindi: "या विकल्प बी?",
+        Spanish: "¿O la opción B?",
+        French: "ou l'option B?",
+        Arabic: "أو الخيار ب؟",
+        Bengali: "অথবা বিকল্প বি?",
+        Russian: "или вариант Б?",
+        Portuguese: "ou opção B?",
+        Indonesian: "atau opsi B?",
+      },
+    };
+
+    return strings[key][language];
   }
 }
 
