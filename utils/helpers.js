@@ -70,10 +70,11 @@ class Helpers {
         Spanish: "Capítulo",
         French: "Chapitre",
         Arabic: "الفصل",
-        Bengali: "অধ্যায়",
         Russian: "Глава",
         Portuguese: "Capítulo",
         Indonesian: "Bab",
+        Italian: "Capitolo",
+        German: "Kapitel",
       },
       optionA: {
         English: "Will you choose option A?",
@@ -82,10 +83,11 @@ class Helpers {
         Spanish: "¿Elegirás la opción A?",
         French: "Choisirez-vous l'option A?",
         Arabic: "هل ستختار الخيار أ؟",
-        Bengali: "আপনি কি বিকল্প এ চয়ন করবেন?",
         Russian: "Вы выберете вариант А?",
         Portuguese: "Você escolherá a opção A?",
         Indonesian: "Apakah Anda akan memilih opsi A?",
+        Italian: "Sceglierai l'opzione A?",
+        German: "Wirst du Option A wählen?",
       },
       optionB: {
         English: "or option B?",
@@ -94,10 +96,11 @@ class Helpers {
         Spanish: "¿O la opción B?",
         French: "ou l'option B?",
         Arabic: "أو الخيار ب؟",
-        Bengali: "অথবা বিকল্প বি?",
         Russian: "или вариант Б?",
         Portuguese: "ou opção B?",
         Indonesian: "atau opsi B?",
+        Italian: "o l'opzione B?",
+        German: "oder Option B?",
       },
     };
 
