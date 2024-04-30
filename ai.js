@@ -148,13 +148,18 @@ async function generateParsedPartWithAudio(mp3, parsedPart, chapterNumber, opena
 
   if (chapterNumber === 1) {
     console.log("Image: " + parsedPart.image);
-    const imageResponse = await openai.images.generate({
-      model: "dall-e-2",
-      prompt: parsedPart.image,
-      n: 1,
-      size: "256x256",
-    });
-    parsedPart.image = imageResponse.data[0]?.url;
+    try {
+      const imageResponse = await openai.images.generate({
+        model: "dall-e-2",
+        prompt: parsedPart.image,
+        n: 1,
+        size: "256x256",
+      });
+      parsedPart.image = imageResponse.data[0]?.url;
+    } catch (err) {
+      parsedPart.image = null;
+      console.log("Error generating image: " + err);
+    }
   }
 
   parsedPart.audio = audioBuffer;
