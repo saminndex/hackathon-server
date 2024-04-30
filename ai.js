@@ -108,7 +108,7 @@ async function handleSuccess(parsedPart, chapterNumber, res, language, attempt, 
 }
 
 function handleError(err, res) {
-  return Failure(res, err.statusCode || 500, err.message);
+  return Failure(res, err.statusCode || 500, err.message || "Server error, please try again later");
 }
 
 function generateLabelWithTime() {
