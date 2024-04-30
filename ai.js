@@ -8,6 +8,9 @@ const maxRetries = 5;
 
 module.exports = {
   generate: async (req, res) => {
+    var labelWithTime = "generate " + Date.now();
+    console.time(labelWithTime);
+
     const authOptions = {
       keyFile: process.env.NODE_ENV === "dev" ? "./secrets.json" : "/etc/secrets/hackathon-secrets.json",
     };
@@ -24,8 +27,6 @@ module.exports = {
     const thisChapter = `Chapter ${thisChapterNumber}`;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      console.log("Attempt: " + attempt);
-
       try {
         let prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption, language || "English");
 
@@ -33,14 +34,12 @@ module.exports = {
           contents: [{ role: "user", parts: [{ text: prompt }] }],
         };
 
-        console.log("Generating text...");
-
         let result = await vertexAI.getGenerativeModel({ model: textModel }).generateContent(request);
         let part = result.response.candidates[0].content?.parts[0]?.text;
         let parsedPart = Helpers.safeParseJSON(part);
 
         if (parsedPart && parsedPart.content && (thisChapterNumber === 1 ? parsedPart.image : true)) {
-          return handleSuccess(parsedPart, thisChapterNumber, res, language || "English");
+          return handleSuccess(parsedPart, thisChapterNumber, res, language || "English", attempt, labelWithTime);
         }
       } catch (err) {
         if (err.message?.includes("Too Many Requests")) {
@@ -55,9 +54,7 @@ module.exports = {
   },
 };
 
-async function handleSuccess(parsedPart, chapterNumber, res, language) {
-  console.log("Generating audio...");
-
+async function handleSuccess(parsedPart, chapterNumber, res, language, attempt, labelWithTime) {
   const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_KEY,
   });
@@ -75,8 +72,6 @@ async function handleSuccess(parsedPart, chapterNumber, res, language) {
   parsedPart.audio = Buffer.from(await mp3.arrayBuffer());
 
   if (chapterNumber === 1) {
-    console.log("Generating image...");
-
     let imageResponse = await openai.images.generate({
       model: "dall-e-2",
       prompt: parsedPart.image,
@@ -87,7 +82,8 @@ async function handleSuccess(parsedPart, chapterNumber, res, language) {
     parsedPart.image = imageResponse.data[0].url;
   }
 
-  console.log("Chapter complete");
+  console.log(`Complete on attempt ${attempt}`);
+  console.timeEnd(labelWithTime);
 
   return Success(res, parsedPart);
 }

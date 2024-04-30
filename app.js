@@ -2,6 +2,7 @@ const express = require("express");
 const { generate } = require("./ai");
 const app = express();
 const port = process.env.PORT || 3001;
+const logRequestDetails = require("./utils/log-request");
 
 if (process.env.NODE_ENV === "dev") {
   require("dotenv").config();
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/ai/generate", generate);
+app.post("/ai/generate", logRequestDetails, generate);
 
 const server = app.listen(port, () => {
   console.log(`Listening on port ${port}!`);
