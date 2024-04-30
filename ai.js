@@ -1,9 +1,9 @@
 const { Success, Failure } = require("./utils/responseService");
 const { OpenAI } = require("openai");
-const { VertexAI } = require("@google-cloud/vertexai");
+const { VertexAI, HarmCategory, HarmBlockThreshold } = require("@google-cloud/vertexai");
 const { Helpers } = require("./utils/helpers");
 
-const textModel = "gemini-1.0-pro-002";
+const textModel = "gemini-1.0-pro-001";
 const maxRetries = 5;
 
 module.exports = {
@@ -26,16 +26,38 @@ module.exports = {
     const thisChapterNumber = (previousChapters?.length || 0) + 1;
     const thisChapter = `Chapter ${thisChapterNumber}`;
 
+    const model = vertexAI.getGenerativeModel({
+      model: textModel,
+      safetySettings: [
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+      ],
+    });
+
+    const prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption, language || "English");
+
+    const request = {
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    };
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        let prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption, language || "English");
-
-        let request = {
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-        };
-
-        let result = await vertexAI.getGenerativeModel({ model: textModel }).generateContent(request);
-        let part = result.response.candidates[0].content?.parts[0]?.text;
+        const result = await model.generateContent(request);
+        const part = result.response.candidates[0].content?.parts[0]?.text;
         let parsedPart = Helpers.safeParseJSON(part);
 
         if (parsedPart && parsedPart.content && (thisChapterNumber === 1 ? parsedPart.image : true)) {
