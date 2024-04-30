@@ -25,14 +25,14 @@ class Helpers {
         }
 
         Rules:
-         - If it's the first chapter, include the genre and title of the story (if it's not then these can be blank)
-         - The first chapter only should include an image prompt, which I will use to generate a visual representation of the story, otherwise leave this field blank
-         - Each chapter should take no more than ${duration} seconds to read
+         - If it's the first chapter, include the title of the story
+         - Include an image prompt, which I will use to generate a visual representation of the story
+         - Each chapter should take approximately ${duration} seconds to read
          - Your response must be a valid structured json object only
-         - JSON.parse() will be used on your response, so format it accordingly, do not include any special characters which will break the parsing
-         - The language of your response must be: ${language}
+         - JSON.parse() will be used on your response, so format it accordingly, do not include any special characters or extraneous text outside of the curly braces which could break the parsing
          - Do not explicitly mention the options inside the content itself, keep those separate in the optionA and optionB fields
          - Do not include the chapter number in the story title
+         - The language of your content, options and title must be: ${language}, except for the 'image' field must always be in plain english
       `;
   }
   static safeParseJSON(str) {
