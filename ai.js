@@ -3,7 +3,7 @@ const { OpenAI } = require("openai");
 const { VertexAI } = require("@google-cloud/vertexai");
 const { Helpers } = require("./utils/helpers");
 
-const textModel = "gemini-1.0-pro";
+const textModel = "gemini-1.0-pro-002";
 const maxRetries = 5;
 
 module.exports = {
@@ -67,9 +67,9 @@ async function handleSuccess(parsedPart, chapterNumber, res, language) {
     voice: "onyx",
     input: `${chapterNumber === 1 ? parsedPart.title : ""}. ${Helpers.l18n("chapter", language)} ${chapterNumber}. ${
       parsedPart.content
-    }. ${Helpers.l18n("optionA", language)}: ${parsedPart.optionA}. ${Helpers.l18n("optionB", language)}: ${
+    }. ${Helpers.l18n("optionA", language)}, ${parsedPart.optionA}?. ${Helpers.l18n("optionB", language)}, ${
       parsedPart.optionB
-    }.`,
+    }?`,
   });
 
   parsedPart.audio = Buffer.from(await mp3.arrayBuffer());

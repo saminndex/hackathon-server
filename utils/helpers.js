@@ -1,4 +1,4 @@
-const duration = 20;
+const duration = 45;
 
 class Helpers {
   static createPrompt(chapterTitle, previousChapters, previousOption, language) {
@@ -32,6 +32,7 @@ class Helpers {
          - JSON.parse() will be used on your response, so format it accordingly, do not include any special characters which will break the parsing
          - The language of your response must be: ${language}
          - Do not explicitly mention the options inside the content itself, keep those separate in the optionA and optionB fields
+         - Do not include the chapter number in the story title
       `;
   }
   static safeParseJSON(str) {
@@ -77,28 +78,28 @@ class Helpers {
         German: "Kapitel",
       },
       optionA: {
-        English: "Will you choose option A?",
-        "Mandarin Chinese (Simplified)": "你会选择选项A吗？",
-        Hindi: "क्या आप विकल्प ए चुनेंगे?",
-        Spanish: "¿Elegirás la opción A?",
-        French: "Choisirez-vous l'option A?",
-        Arabic: "هل ستختار الخيار أ؟",
-        Russian: "Вы выберете вариант А?",
-        Portuguese: "Você escolherá a opção A?",
-        Italian: "Sceglierai l'opzione A?",
-        German: "Wirst du Option A wählen?",
+        English: "Will you choose option A",
+        "Mandarin Chinese (Simplified)": "你会选择选项A吗",
+        Hindi: "क्या आप विकल्प ए चुनेंगे",
+        Spanish: "¿Elegirás la opción A",
+        French: "Choisirez-vous l'option A",
+        Arabic: "هل ستختار الخيار أ",
+        Russian: "Вы выберете вариант А",
+        Portuguese: "Você escolherá a opção A",
+        Italian: "Sceglierai l'opzione A",
+        German: "Wirst du Option A wählen",
       },
       optionB: {
         English: "or option B?",
-        "Mandarin Chinese (Simplified)": "还是选项B？",
-        Hindi: "या विकल्प बी?",
-        Spanish: "¿O la opción B?",
-        French: "ou l'option B?",
+        "Mandarin Chinese (Simplified)": "还是选项B",
+        Hindi: "या विकल्प बी",
+        Spanish: "¿O la opción B",
+        French: "ou l'option B",
         Arabic: "أو الخيار ب؟",
-        Russian: "или вариант Б?",
-        Portuguese: "ou opção B?",
-        Italian: "o l'opzione B?",
-        German: "oder Option B?",
+        Russian: "или вариант Б",
+        Portuguese: "ou opção B",
+        Italian: "o l'opzione B",
+        German: "oder Option B",
       },
     };
 
