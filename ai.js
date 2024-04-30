@@ -43,7 +43,10 @@ module.exports = {
           return handleSuccess(parsedPart, thisChapterNumber, res, language || "English");
         }
       } catch (err) {
-        console.error(`Attempt ${attempt} failed: ${err.message}`);
+        if (err.message?.includes("Too Many Requests")) {
+          console.error(`Attempt ${attempt} failed: ${err.message}`);
+          return Failure(res, err.statusCode || 500, "Quota exceeded, please try again in a few minutes.");
+        }
         if (attempt === maxRetries) {
           return Failure(res, err.statusCode || 500, "Unable to generate a valid chapter after several attempts.");
         }

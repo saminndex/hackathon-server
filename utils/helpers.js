@@ -31,6 +31,7 @@ class Helpers {
          - Your response must be a valid structured json object only
          - JSON.parse() will be used on your response, so format it accordingly, do not include any special characters which will break the parsing
          - The language of your response must be: ${language}
+         - Do not explicitly mention the options inside the content itself, keep those separate in the optionA and optionB fields
       `;
   }
   static safeParseJSON(str) {
@@ -72,7 +73,6 @@ class Helpers {
         Arabic: "الفصل",
         Russian: "Глава",
         Portuguese: "Capítulo",
-        Indonesian: "Bab",
         Italian: "Capitolo",
         German: "Kapitel",
       },
@@ -85,7 +85,6 @@ class Helpers {
         Arabic: "هل ستختار الخيار أ؟",
         Russian: "Вы выберете вариант А?",
         Portuguese: "Você escolherá a opção A?",
-        Indonesian: "Apakah Anda akan memilih opsi A?",
         Italian: "Sceglierai l'opzione A?",
         German: "Wirst du Option A wählen?",
       },
@@ -98,7 +97,6 @@ class Helpers {
         Arabic: "أو الخيار ب؟",
         Russian: "или вариант Б?",
         Portuguese: "ou opção B?",
-        Indonesian: "atau opsi B?",
         Italian: "o l'opzione B?",
         German: "oder Option B?",
       },
