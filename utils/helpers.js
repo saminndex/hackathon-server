@@ -1,9 +1,9 @@
 const duration = 45;
 
 class Helpers {
-  static createPrompt(chapterTitle, previousChapters, previousOption, language) {
+  static createPrompt(chapterTitle, previousChapters, previousOption, language, genre) {
     return `
-       Let's create a "Choose Your Adventure" type story (it needs to be appropriate for all ages). You are to generate ${chapterTitle} of the story only.
+       Let's create a "Choose Your Adventure" type story of genre "${genre}" (it needs to be appropriate for all ages). You are to generate ${chapterTitle} of the story only.
     
        Please provide the chapter narrative, followed by two choices for the reader to select from. These choices will determine the direction of the subsequent chapter.
 

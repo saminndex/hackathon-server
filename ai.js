@@ -6,6 +6,7 @@ const { Helpers } = require("./utils/helpers");
 const textModel = "gemini-1.0-pro-002";
 const maxRetries = 5;
 const fallbackLanguage = "English";
+const fallbackGenre = "Fantasy";
 
 module.exports = {
   generate: async (req, res) => {
@@ -20,7 +21,7 @@ module.exports = {
       googleAuthOptions: authOptions,
     });
 
-    const { previousChapters, previousOption, language } = req.body;
+    const { previousChapters, previousOption, language, genre } = req.body;
 
     const thisChapterNumber = (previousChapters?.length || 0) + 1;
     const thisChapter = `Chapter ${thisChapterNumber}`;
@@ -30,7 +31,13 @@ module.exports = {
       safetySettings: generateSafetySettings(),
     });
 
-    const prompt = Helpers.createPrompt(thisChapter, previousChapters, previousOption, language || fallbackLanguage);
+    const prompt = Helpers.createPrompt(
+      thisChapter,
+      previousChapters,
+      previousOption,
+      language || fallbackLanguage,
+      genre || fallbackGenre
+    );
 
     try {
       const parsedPart = await generateChapter(model, prompt, thisChapterNumber);
@@ -39,6 +46,7 @@ module.exports = {
         thisChapterNumber,
         res,
         language || fallbackLanguage,
+        genre || fallbackGenre,
         parsedPart.attempt,
         labelWithTime
       );
@@ -94,7 +102,7 @@ async function fallbackAI(prompt) {
   return completion.choices[0].message.content;
 }
 
-async function handleSuccess(parsedPart, chapterNumber, res, language, attempt, labelWithTime) {
+async function handleSuccess(parsedPart, chapterNumber, res, language, genre, attempt, labelWithTime) {
   const openai = getOpenAI();
 
   const speechInput = generateSpeechInput(parsedPart, chapterNumber, language);
